@@ -8,7 +8,6 @@ namespace ExampleLib.Content.Items {
     public class CodeSummon : ModItem {
         public override void SetStaticDefaults()
         {
-            // Tooltip.SetDefault("This is a summoning item use to summon a legendary being.");
             ItemID.Sets.SortingPriorityBossSpawns[Item.type] = 12;
         }
 
@@ -23,7 +22,7 @@ namespace ExampleLib.Content.Items {
             Item.consumable = true;
         }
 
-        public override bool? UseItem(Player player)/* tModPorter Suggestion: Return null instead of false */
+        public override bool? UseItem(Player player)
         {
             NPC.SpawnOnPlayer(player.whoAmI, ModContent.NPCType<RottedBarber>());
             SoundEngine.PlaySound(SoundID.Roar, player.position);

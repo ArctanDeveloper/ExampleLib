@@ -1,9 +1,9 @@
-
-
 using System;
+using ExampleLib.Content.Items;
 using ExampleLib.Content.Projectiles;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -31,7 +31,7 @@ namespace ExampleLib.Content.NPCs {
         public override void SetDefaults() {
 			NPC.width = 64;
 			NPC.height = 64;
-			NPC.damage = 300;
+			NPC.damage = 100;
 			NPC.defense = 50;
 			NPC.lifeMax = 50000;
 			NPC.HitSound = SoundID.NPCHit1;
@@ -41,11 +41,17 @@ namespace ExampleLib.Content.NPCs {
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
 			SceneEffectPriority = SceneEffectPriority.BossHigh;
+            Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Barber Of Decay");
 			NPC.noTileCollide = true;
 			NPC.boss = true;
 		}
 
-		public override void AI() //this is where you program your AI
+        public override void ModifyNPCLoot(NPCLoot npcLoot)
+        {
+            npcLoot.Add(ItemDropRule.OneFromOptions(1, new int[] {ItemID.StinkPotion, ModContent.ItemType<FetidTome>(), ModContent.ItemType<DecayAxe>()}));
+        }
+
+        public override void AI()
 		{
 			NPC.TargetClosest(true);
 
@@ -83,14 +89,14 @@ namespace ExampleLib.Content.NPCs {
             if (AI_Timer % (NPC.life < NPC.lifeMax / 10 ? 50 : 100) == 0) {
                 switch (AI_SpellState) {
                     case (int)SpellState.Rain:
-                        for (int i = 0; i < 32; i++) {
+                        for (int i = 0; i < 24; i++) {
                             Vector2 spawnPos = target.Center + new Vector2(Main.rand.NextFloat(-800, 800), Main.rand.NextFloat(-800, -600));
                             Vector2 speed = new Vector2(Main.rand.NextFloat(-10, 10), Main.rand.NextFloat(10, 20));
                             Projectile.NewProjectile(NPC.GetSource_FromAI(), spawnPos, speed, ModContent.ProjectileType<RotSpine>(), NPC.damage, 0);
                         }
                         break;
                     case (int)SpellState.Circle:
-                        for (int i = 0; i < 32; i++) {
+                        for (int i = 0; i < 16; i++) {
                             Vector2 spawnPos = target.Center + Main.rand.NextVector2CircularEdge(500, 500);
                             Vector2 speed = spawnPos.DirectionTo(target.Center) * Main.rand.NextFloat(5, 12);
                             Projectile.NewProjectile(NPC.GetSource_FromAI(), spawnPos, speed, ModContent.ProjectileType<RotSpine>(), NPC.damage, 0);
@@ -118,19 +124,19 @@ namespace ExampleLib.Content.NPCs {
                     case (int)SpellState.Debuff:
                         target.AddBuff(BuffID.Slow, 180);
                         NPC.Center = target.Center + Main.rand.NextVector2CircularEdge(1200, 1200);
-                        for (int i = 0; i < 32; i++) {
+                        for (int i = 0; i < 12; i++) {
                             Vector2 spawnPos = target.Center + Main.rand.NextVector2CircularEdge(500, 500);
                             Vector2 speed = (spawnPos.DirectionTo(target.Center) * Main.rand.NextFloat(5, 12)).RotatedByRandom(MathHelper.PiOver4 * 0.2f);
                             Projectile.NewProjectile(NPC.GetSource_FromAI(), spawnPos, speed, ModContent.ProjectileType<RotSpine>(), NPC.damage, 0);
                         }
 
-                        for (int i = 0; i < 32; i++) {
+                        for (int i = 0; i < 12; i++) {
                             Vector2 spawnPos = target.Center + Main.rand.NextVector2CircularEdge(1200, 1200);
                             Vector2 speed = (spawnPos.DirectionTo(target.Center) * Main.rand.NextFloat(15, 22)).RotatedByRandom(MathHelper.PiOver4 * 0.4f);
                             Projectile.NewProjectile(NPC.GetSource_FromAI(), spawnPos, speed, ModContent.ProjectileType<RotSpine>(), NPC.damage, 0);
                         }
 
-                        for (int i = 0; i < 32; i++) {
+                        for (int i = 0; i < 12; i++) {
                             Vector2 spawnPos = target.Center + Main.rand.NextVector2CircularEdge(1800, 1800);
                             Vector2 speed = (spawnPos.DirectionTo(target.Center) * Main.rand.NextFloat(25, 32)).RotatedByRandom(MathHelper.PiOver4 * 0.6f);
                             Projectile.NewProjectile(NPC.GetSource_FromAI(), spawnPos, speed, ModContent.ProjectileType<RotSpine>(), NPC.damage, 0);
