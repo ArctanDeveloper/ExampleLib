@@ -1,0 +1,13 @@
+Items: {
+	CodeSummon: {
+		DisplayName: Code Summon
+		Tooltip: ""
+	}
+}
+
+NPCs.RottedBarber.DisplayName: Rotted Barber
+
+Projectiles: {
+	RotSpine.DisplayName: Rot Spine
+	Tentacle.DisplayName: Tentacle
+}
