@@ -1,7 +1,17 @@
 Items: {
 	CodeSummon: {
 		DisplayName: Code Summon
-		Tooltip: ""
+		Tooltip: Summons a Rotting creature, make sure you have disinfectant and are vaccinated against hepatitis B.
+	}
+
+	DecayAxe: {
+		DisplayName: Decay Axe
+		Tooltip: Some people say ripping a rotted corpse in half and sticking it to a rod to make a morbid axe is a bit much. Those people aren't liches.
+	}
+
+	FetidTome: {
+		DisplayName: Fetid Tome
+		Tooltip: For the aspiring necromancer.
 	}
 }
 
