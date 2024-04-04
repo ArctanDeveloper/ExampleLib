@@ -13,6 +13,31 @@ Items: {
 		DisplayName: Fetid Tome
 		Tooltip: For the aspiring necromancer.
 	}
+
+	RottenCarapace: {
+		DisplayName: Rotten Carapace
+		Tooltip: ""
+	}
+
+	SwordOfRot: {
+		DisplayName: Sword Of Rot
+		Tooltip: ""
+	}
+
+	RottenBreastplate: {
+		DisplayName: Rotten Breastplate
+		Tooltip: ""
+	}
+
+	RottenGreaves: {
+		DisplayName: Rotten Greaves
+		Tooltip: ""
+	}
+
+	RottenHelm: {
+		DisplayName: Rotten Helm
+		Tooltip: ""
+	}
 }
 
 NPCs.RottedBarber.DisplayName: Rotted Barber

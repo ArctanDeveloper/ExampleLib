@@ -4,6 +4,7 @@ using ExampleLib.Content.Projectiles;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -48,23 +49,31 @@ namespace ExampleLib.Content.NPCs {
 
         public override void ModifyNPCLoot(NPCLoot npcLoot)
         {
-            npcLoot.Add(ItemDropRule.OneFromOptions(1, new int[] {ItemID.StinkPotion, ModContent.ItemType<FetidTome>(), ModContent.ItemType<DecayAxe>()}));
+            //This is loot.
+            npcLoot.Add(ItemDropRule.OneFromOptions(1, new int[] {ItemID.StinkPotion, ModContent.ItemType<FetidTome>(), ModContent.ItemType<DecayAxe>(), ModContent.ItemType<SwordOfRot>()}));
+            npcLoot.Add(ItemDropRule.Common(ItemID.FossilOre, 1, 35, 125));
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<RottenCarapace>(), 2, 35, 55));
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<RottenCarapace>(), 3, 15, 35));
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<RottenCarapace>(), 5, 5, 25));
+            npcLoot.Add(ItemDropRule.CoinsBasedOnNPCValue(Main.rand.Next(ModContent.NPCType<RottedBarber>())));
         }
 
         public override void AI()
 		{
 			NPC.TargetClosest(true);
 
+            //Get the npc's target
 			Player target = Main.player[NPC.target];
 			
+            //Handle NPC ai state
             switch (AI_State) {
                 case (int)ActionState.Normal:
                     Vector2 desired_velocity = (target.Center - NPC.Center).SafeNormalize(Vector2.Zero) * 8;
                     Vector2 steering = desired_velocity - NPC.velocity;
-                    steering = new Vector2(Math.Clamp(steering.X, -2, 2), Math.Clamp(steering.Y, -2, 2));
-                    steering /= 2;
+                    steering = new Vector2(Math.Clamp(steering.X, -2, 2), Math.Clamp(steering.Y, -2, 2)) / 2;
                     NPC.velocity = NPC.velocity + steering;
                     NPC.velocity = new Vector2(Math.Clamp(NPC.velocity.X, -32, 32), Math.Clamp(NPC.velocity.Y, -32, 32));
+                    
                     if (AI_Timer % (NPC.life < NPC.lifeMax / 8 ? 10 : 20) == 0 && NPC.life < NPC.lifeMax / 2) {
                         Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center, NPC.velocity * 3, ProjectileID.DD2DarkMageBolt, NPC.damage, 0);
                         if (NPC.life < NPC.lifeMax / 4) {
@@ -86,6 +95,7 @@ namespace ExampleLib.Content.NPCs {
                     break;
             }
 
+            //If boss is below 1 tenth health then if the ai timer is divisible by 50 cast a spell, other wise if the ai timer is divisible by 100 cast a spell.
             if (AI_Timer % (NPC.life < NPC.lifeMax / 10 ? 50 : 100) == 0) {
                 switch (AI_SpellState) {
                     case (int)SpellState.Rain:
@@ -124,30 +134,36 @@ namespace ExampleLib.Content.NPCs {
                     case (int)SpellState.Debuff:
                         target.AddBuff(BuffID.Slow, 180);
                         NPC.Center = target.Center + Main.rand.NextVector2CircularEdge(1200, 1200);
+
+                        //Summon the inner ring
                         for (int i = 0; i < 12; i++) {
-                            Vector2 spawnPos = target.Center + Main.rand.NextVector2CircularEdge(500, 500);
-                            Vector2 speed = (spawnPos.DirectionTo(target.Center) * Main.rand.NextFloat(5, 12)).RotatedByRandom(MathHelper.PiOver4 * 0.2f);
-                            Projectile.NewProjectile(NPC.GetSource_FromAI(), spawnPos, speed, ModContent.ProjectileType<RotSpine>(), NPC.damage, 0);
+                            Vector2 spawnPos = target.Center + Main.rand.NextVector2CircularEdge(500, 500); //Get the position
+                            Vector2 speed = (spawnPos.DirectionTo(target.Center) * Main.rand.NextFloat(5, 12)).RotatedByRandom(MathHelper.PiOver4 * 0.2f); //Get the velocity to the target rotated by a bit
+                            Projectile.NewProjectile(NPC.GetSource_FromAI(), spawnPos, speed, ModContent.ProjectileType<RotSpine>(), NPC.damage, 0); //Summon the projectile
                         }
 
+                        //Summon the middle ring
                         for (int i = 0; i < 12; i++) {
-                            Vector2 spawnPos = target.Center + Main.rand.NextVector2CircularEdge(1200, 1200);
-                            Vector2 speed = (spawnPos.DirectionTo(target.Center) * Main.rand.NextFloat(15, 22)).RotatedByRandom(MathHelper.PiOver4 * 0.4f);
-                            Projectile.NewProjectile(NPC.GetSource_FromAI(), spawnPos, speed, ModContent.ProjectileType<RotSpine>(), NPC.damage, 0);
+                            Vector2 spawnPos = target.Center + Main.rand.NextVector2CircularEdge(1200, 1200); //Get the position
+                            Vector2 speed = (spawnPos.DirectionTo(target.Center) * Main.rand.NextFloat(15, 22)).RotatedByRandom(MathHelper.PiOver4 * 0.4f); //Get the velocity to the target rotated by a bit
+                            Projectile.NewProjectile(NPC.GetSource_FromAI(), spawnPos, speed, ModContent.ProjectileType<RotSpine>(), NPC.damage, 0); //Summon the projectile
                         }
 
+                        //Summon the outer ring
                         for (int i = 0; i < 12; i++) {
-                            Vector2 spawnPos = target.Center + Main.rand.NextVector2CircularEdge(1800, 1800);
-                            Vector2 speed = (spawnPos.DirectionTo(target.Center) * Main.rand.NextFloat(25, 32)).RotatedByRandom(MathHelper.PiOver4 * 0.6f);
-                            Projectile.NewProjectile(NPC.GetSource_FromAI(), spawnPos, speed, ModContent.ProjectileType<RotSpine>(), NPC.damage, 0);
+                            Vector2 spawnPos = target.Center + Main.rand.NextVector2CircularEdge(1800, 1800); //Get the position
+                            Vector2 speed = (spawnPos.DirectionTo(target.Center) * Main.rand.NextFloat(25, 32)).RotatedByRandom(MathHelper.PiOver4 * 0.6f); //Get the velocity to the target rotated by a bit
+                            Projectile.NewProjectile(NPC.GetSource_FromAI(), spawnPos, speed, ModContent.ProjectileType<RotSpine>(), NPC.damage, 0); //Summon the projectile
                         }
+
                         break;
                 }
-                AI_SpellState++;
-                AI_SpellState %= (int)SpellState.Size;
+
+                AI_SpellState++; //Increment the spell state
+                AI_SpellState %= (int)SpellState.Size; //Take the mod of the spell state to avoid going over the limit
             }
 
-            AI_Timer++;
+            AI_Timer++; //Increment the ai timer
 		}
 
 		public override void HitEffect(NPC.HitInfo hit) {
